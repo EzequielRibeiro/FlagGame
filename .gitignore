@@ -12,3 +12,5 @@
 /captures
 .externalNativeBuild
 .cxx
+/app/src/androidTest/java/br/bandeira/jogodasbandeirasguiz/
+/app/src/test/java/br/bandeira/jogodasbandeirasguiz/
