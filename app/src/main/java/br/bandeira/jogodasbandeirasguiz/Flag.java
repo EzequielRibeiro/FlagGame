@@ -4,9 +4,16 @@ public class Flag {
 
     private String flagName;
     private int idFlag;
+    private boolean isSymbol = false;
 
-    public Flag(){
+    public Flag(){}
 
+    public boolean isSymbol() {
+        return isSymbol;
+    }
+
+    public void setIsSymbol(boolean mixed) {
+        this.isSymbol = mixed;
     }
 
     public int getIdFlag() {

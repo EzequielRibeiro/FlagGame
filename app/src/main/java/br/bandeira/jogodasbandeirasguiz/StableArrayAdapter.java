@@ -31,18 +31,32 @@ public class StableArrayAdapter extends ArrayAdapter <Score> {
             view = LayoutInflater.from(getContext()).inflate(R.layout.score_custom, parent, false);
         }
         // Lookup view for data population
-        TextView time = view.findViewById(R.id.textViewTime);
-        time.setText(sc.getTime());
-        TextView error = view.findViewById(R.id.textViewError);
-        error.setText(sc.getError());
-        TextView hit = view.findViewById(R.id.textViewHit);
-        hit.setText(sc.getHit());
-        TextView score = view.findViewById(R.id.textViewScore);
-         score.setText(sc.getScore());
+        TextView timeText = view.findViewById(R.id.textViewTime);
+        timeText.setText(sc.getTime());
+        TextView errorText = view.findViewById(R.id.textViewFlags);
+        errorText.setText(sc.getFlags());
+        TextView hitTex = view.findViewById(R.id.textViewHit);
+        hitTex.setText(sc.getHit());
+        TextView scoreText = view.findViewById(R.id.textViewScore);
+         scoreText.setText(sc.getScore());
 
         return view;
 
     };
+ /*
+    private boolean isNumber(String number){
+
+        try {
+            int i = Integer.parseInt(number);
+        } catch (NumberFormatException n) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+  */
 
 
 }

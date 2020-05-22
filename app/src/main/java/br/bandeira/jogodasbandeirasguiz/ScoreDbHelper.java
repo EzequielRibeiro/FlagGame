@@ -16,7 +16,7 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
                     ScoreEntry._ID + " INTEGER PRIMARY KEY," +
                     ScoreEntry.COLUMN_NAME_DATE + " TEXT," +
                     ScoreEntry.COLUMN_NAME_TIME + " TEXT,"+
-                    ScoreEntry.COLUMN_NAME_ERROR + " TEXT,"+
+                    ScoreEntry.COLUMN_NAME_FLAGS + " TEXT,"+
                     ScoreEntry.COLUMN_NAME_HIT + " TEXT,"+
                     ScoreEntry.COLUMN_NAME_SCORE + " INTEGER)";
 
@@ -40,12 +40,13 @@ public class ScoreDbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
+
     public static class ScoreEntry implements BaseColumns {
         public static final String TABLE_NAME = "entry";
         public static final String COLUMN_NAME_DATE = "date";
         public static final String COLUMN_NAME_TIME = "time";
         public static final String COLUMN_NAME_HIT = "hit";
-        public static final String COLUMN_NAME_ERROR = "error";
+        public static final String COLUMN_NAME_FLAGS = "flags";
         public static final String COLUMN_NAME_SCORE = "score";
     }
 

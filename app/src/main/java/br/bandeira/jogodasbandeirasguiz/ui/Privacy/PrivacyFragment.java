@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,14 +23,16 @@ public class PrivacyFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         privacyViewModel =
                 ViewModelProviders.of(this).get(PrivacyViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
-        final TextView textView = root.findViewById(R.id.text_slideshow);
-        privacyViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        View root = inflater.inflate(R.layout.fragment_privacy, container, false);
+
+
+        WebView webView = (WebView) root.findViewById(R.id.webViewPolicy);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.loadUrl("file:///android_asset/privacy_policy.html");
+
         return root;
     }
 }

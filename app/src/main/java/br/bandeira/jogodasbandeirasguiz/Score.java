@@ -3,16 +3,16 @@ package br.bandeira.jogodasbandeirasguiz;
 public class Score {
 
     private long id;
-    private String date;
-    private String time;
-    private String error;
-    private String hit;
-    private String score;
+    private String date  = "00/00/00";
+    private String time  = "00:00:00";
+    private String flags =  "flag" ;
+    private String hit   = "0";
+    private String score = "0";
 
     public Score(){}
 
-    public Score(String error, String hit,String time, String score) {
-        this.error = error;
+    public Score(String flags, String hit,String time, String score) {
+        this.flags = flags;
         this.hit  = hit;
         this.time = time;
         this.score = score;
@@ -42,12 +42,12 @@ public class Score {
         this.time = time;
     }
 
-    public String getError() {
-        return error;
+    public String getFlags() {
+        return flags;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setFlags(String flags) {
+        this.flags = flags;
     }
 
     public String getHit() {
@@ -69,7 +69,7 @@ public class Score {
     @Override
     public String toString() {
 
-        return  time +"  "+ error +"  "+ hit +"  "+ score ;
+        return  time +"  "+ flags +"  "+ hit +"  "+ score ;
     }
 
 

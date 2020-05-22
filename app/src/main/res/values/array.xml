@@ -12,7 +12,7 @@
         <item>Australia</item>
         <item>Austria</item>
         <item>Azerbaijan</item>
-        <item>the Bahamas</item>
+        <item>The Bahamas</item>
         <item>Bahrain</item>
         <item>Bangladesh</item>
         <item>Barbados</item>
@@ -44,7 +44,6 @@
         <item>Cuba</item>
         <item>Cyprus</item>
         <item>Kazakhstan</item>
-        <item>Congo</item>
         <item>Denmark</item>
         <item>Djibouti</item>
         <item>Dominica</item>
@@ -107,7 +106,7 @@
         <item>Maldives</item>
         <item>Mali</item>
         <item>Malta</item>
-        <item>the Marshall Islands</item>
+        <item>The Marshall Islands</item>
         <item>Mauritania</item>
         <item>Mauritius</item>
         <item>Mexico</item>
@@ -189,12 +188,32 @@
         <item>Uruguay</item>
         <item>Uzbekistan</item>
         <item>Vanuatu</item>
-        <item>the Vatican</item>
+        <item>Vatican City State</item>
         <item>Venezuela</item>
         <item>Vietnam</item>
         <item>Yemen</item>
         <item>Zambia</item>
         <item>Zimbabwe</item>
     </string-array>
+	
+	<string-array name="symbol">
+		<item>Afghanistan</item>
+		<item>Argentina</item>
+		<item>Barbados</item>
+		<item>Belize</item>
+		<item>Bhutan</item>
+		<item>Iran</item>
+		<item>Israel</item>
+		<item>Mexico</item>
+		<item>Mongolia</item>
+		<item>Montenegro</item>
+		<item>Mozambique</item>
+		<item>Portugal</item>
+		<item>Serbia</item>
+		<item>South Korea</item>
+		<item>Sri Lanka</item>
+		<item>Uganda</item>
+		<item>Vatican City State</item>
+</string-array>
 
     </resources>

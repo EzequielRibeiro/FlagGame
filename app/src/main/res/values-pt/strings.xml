@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_privacy">Política de Privacidade</string>
+    <string name="menu_about">Sobre</string>
+    <string name="action_settings">Configuração</string>
+    <string name="hits">ACERTOS</string>
+    <string name="flags">BANDEIRAS</string>
+    <string name="score">PONTUACÃO</string>
+    <string name="time">TEMPO</string>
+    <string name="menu_start">Jogo Iniciado</string>
+    <string name="aviso">Nome do aplicativo: \n Flag 2020 \n\n Versão: \n 1.0 \n\n Obrigado por fazer o download! \n\n Se encontrar algum erro ou sugestões para a aplicação, entre em contato conosco pelo e-mail: aplicativoparamobile@gmail.com \n\n Desenvolvido por: Ezequiel A. Ribeiro</string>
+    <string name="start_game">JOGAR</string>
+</resources>
