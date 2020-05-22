@@ -285,7 +285,7 @@ public class StartViewModel extends ViewModel {
 
     private void sendPlayerWinsToFirebase(){
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences("idPlayer", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("values", Context.MODE_PRIVATE);
         String idPlayer =  sharedPreferences.getString("id","00");
 
             FirebaseAnalytics  mFirebaseAnalytics = FirebaseAnalytics.getInstance(view.getContext());

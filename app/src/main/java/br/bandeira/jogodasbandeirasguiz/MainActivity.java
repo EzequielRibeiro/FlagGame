@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         textViewId = (TextView) headerView.findViewById(R.id.textViewIdPlayer);
 
         if(!sharedPreferences.contains("id")){
-            editor.putString("id","empty").commit();
+            editor.putString("id","").commit();
         }
 
         if(!sharedPreferences.contains("audio")){
@@ -195,13 +195,13 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("idPlayer", Context.MODE_PRIVATE);
-        String idPlayer = sharedPreferences.getString("id","empty");
+        SharedPreferences sharedPreferences = getSharedPreferences("values", Context.MODE_PRIVATE);
 
-        if(idPlayer.equals("empty")){
-            editor.putString("id",getPlayerIdGenerator()).commit();
+        if(sharedPreferences.getString("id","").isEmpty()){
+            sharedPreferences.edit().putString("id",getPlayerIdGenerator()).commit();
         }
-           textViewId.setText(sharedPreferences.getString("id"," "));
+
+        textViewId.setText(sharedPreferences.getString("id",""));
 
     }
 
