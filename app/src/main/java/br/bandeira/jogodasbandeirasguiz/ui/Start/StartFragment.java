@@ -170,6 +170,7 @@ public class StartFragment extends Fragment {
 
     public void onDestroy(){
         super.onDestroy();
+        StartViewModel.saveScore(getContext());
 
     }
 
