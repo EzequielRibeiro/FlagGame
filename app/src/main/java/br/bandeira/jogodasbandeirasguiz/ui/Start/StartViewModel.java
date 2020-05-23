@@ -304,17 +304,8 @@ public class StartViewModel extends ViewModel {
     public void showResult(boolean win){
 
         DialogFragmentShowResult dialog = DialogFragmentShowResult.newInstance(SCORE,POSITIONCURRENT,HIT,win);
+        dialog.setCancelable(false);
         dialog.show(fragmentManager,"");
-
-        // Create and show the dialog.
-        //DialogFragment newFragment = MyDialogFragment.newInstance(mStackLevel);
-        //newFragment.show(ft, "dialog");
-
-        if(win){
-
-
-
-        }
 
     }
 

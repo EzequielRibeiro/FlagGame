@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageDialogResultWin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="250dp"
+        android:layout_height="240dp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/textDialogLabelScore"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
         android:text="@string/score"
         android:textAllCaps="false"
         android:textColor="@android:color/holo_orange_light"
-        android:textSize="30sp"
+        android:textSize="24sp"
         android:textStyle="bold|italic"
         app:layout_constraintBottom_toTopOf="@+id/textDialogScore"
         app:layout_constraintEnd_toEndOf="parent"
@@ -107,6 +107,7 @@
         android:id="@+id/adViewResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:adSize="MEDIUM_RECTANGLE"
         app:adUnitId="ca-app-pub-0822808376839371/6355848841"
         app:layout_constraintEnd_toEndOf="parent"

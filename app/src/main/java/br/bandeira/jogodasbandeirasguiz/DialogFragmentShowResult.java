@@ -11,13 +11,19 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel;
 
@@ -26,6 +32,7 @@ public class DialogFragmentShowResult extends DialogFragment {
 
     private int score = 0, hit = 0, flags = 0;
     private boolean win = false;
+    private AdView mAdViewResult;
 
     public DialogFragmentShowResult(){
 
@@ -57,7 +64,7 @@ public class DialogFragmentShowResult extends DialogFragment {
         hit   = getArguments().getInt("hit");
         win   = getArguments().getBoolean("win");
 
-        View v = inflater.inflate(R.layout.dialog_show_result, null);
+        final View v = inflater.inflate(R.layout.dialog_show_result, null);
 
         TextView textDialogScore = (TextView)  v.findViewById(R.id.textDialogScore);
         textDialogScore.setText(Integer.toString(score));
@@ -70,9 +77,10 @@ public class DialogFragmentShowResult extends DialogFragment {
 
         ImageView imageView = (ImageView) v.findViewById(R.id.imageDialogResultWin);
 
-        if(win){
-            imageView.setVisibility(View.VISIBLE);
-        }else{
+        final ConstraintLayout constraintLayout = v.findViewById(R.id.constantLayoutDialogResult);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
+
+        if(!win){
             imageView.setVisibility(View.GONE);
         }
 
@@ -93,6 +101,50 @@ public class DialogFragmentShowResult extends DialogFragment {
                         //Navigation.findNavController(view).navigate(R.id.nav_home);
                     }
                 });
+
+
+        mAdViewResult = v.findViewById(R.id.adViewResult);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdViewResult.loadAd(adRequest);
+        mAdViewResult.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
+                params.height = 0;
+                mAdViewResult.setLayoutParams(params);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the user is about to return
+                // to the app after tapping on an ad.
+            }
+        });
+
+
+
+
         return builder.create();
     }
 
