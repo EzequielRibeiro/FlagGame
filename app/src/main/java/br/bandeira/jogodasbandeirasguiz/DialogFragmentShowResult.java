@@ -77,8 +77,6 @@ public class DialogFragmentShowResult extends DialogFragment {
 
         ImageView imageView = (ImageView) v.findViewById(R.id.imageDialogResultWin);
 
-        final ConstraintLayout constraintLayout = v.findViewById(R.id.constantLayoutDialogResult);
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
 
         if(!win){
             imageView.setVisibility(View.GONE);
@@ -114,6 +112,7 @@ public class DialogFragmentShowResult extends DialogFragment {
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
+                ConstraintLayout constraintLayout = v.findViewById(R.id.constantLayoutDialogResult);
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
                 params.height = 0;
                 mAdViewResult.setLayoutParams(params);

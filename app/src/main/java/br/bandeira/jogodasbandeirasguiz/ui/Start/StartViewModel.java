@@ -271,7 +271,6 @@ public class StartViewModel extends ViewModel {
 
             if(flagList.size() == HIT){
                 showResult(true);
-
                 sendPlayerWinsToFirebase();
             }
             else
@@ -476,15 +475,18 @@ public class StartViewModel extends ViewModel {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_DATE, currentDateandTime);
-        values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_TIME, StartViewModel.getTime());
-        values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_FLAGS, POSITIONCURRENT);
-        values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_HIT, HIT);
-        values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE, SCORE);
 
+        //player has played ?
         int playerHasPlayed = ERROR + HIT;
 
         if(playerHasPlayed > 0) {
+
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_DATE, currentDateandTime);
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_TIME, StartViewModel.getTime());
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_FLAGS, POSITIONCURRENT);
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_HIT, HIT);
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE, SCORE);
+
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
             POSITIONCURRENT = 0;
             POINTSADD = 100;

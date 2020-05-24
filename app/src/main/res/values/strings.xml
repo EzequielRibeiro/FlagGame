@@ -19,4 +19,5 @@
     <string name="score">SCORE</string>
     <string name="start_game">START GAME</string>
     <string name="time">TIME</string>
+    <string name="want_to_exit">Are you sure you want to exit?</string>
 </resources>

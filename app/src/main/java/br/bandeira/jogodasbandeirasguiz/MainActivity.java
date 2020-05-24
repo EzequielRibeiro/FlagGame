@@ -43,6 +43,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.util.Random;
 
+import br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private TextView textViewId;
+
 
 
     @Override
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
@@ -106,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
     private String getPlayerIdGenerator() {
         Random rand = new Random();
@@ -173,12 +178,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
-                || super.onSupportNavigateUp();
+
+        StartViewModel.saveScore(getApplicationContext());
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
+
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

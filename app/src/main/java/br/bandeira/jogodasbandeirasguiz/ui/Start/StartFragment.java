@@ -71,7 +71,7 @@ public class StartFragment extends Fragment {
    private void closeWindows(){
 
        AlertDialog.Builder builder = new AlertDialog.Builder(root.getContext());
-       builder.setMessage("Are you sure you want to exit?")
+       builder.setMessage(R.string.want_to_exit)
                .setCancelable(false)
                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
@@ -170,7 +170,7 @@ public class StartFragment extends Fragment {
 
     public void onDestroy(){
         super.onDestroy();
-        StartViewModel.saveScore(getContext());
+        
 
     }
 

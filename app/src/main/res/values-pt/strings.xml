@@ -10,4 +10,5 @@
     <string name="menu_start">Jogo Iniciado</string>
     <string name="aviso">Nome do aplicativo: \n Flag 2020 \n\n Versão: \n 1.0 \n\n Obrigado por fazer o download! \n\n Se encontrar algum erro ou sugestões para a aplicação, entre em contato conosco pelo e-mail: aplicativoparamobile@gmail.com \n\n Desenvolvido por: Ezequiel A. Ribeiro</string>
     <string name="start_game">JOGAR</string>
+    <string name="want_to_exit">Sair da partida ?</string>
 </resources>
