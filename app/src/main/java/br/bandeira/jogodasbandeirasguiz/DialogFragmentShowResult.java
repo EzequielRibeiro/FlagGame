@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -78,17 +80,19 @@ public class DialogFragmentShowResult extends DialogFragment {
         ImageView imageView = (ImageView) v.findViewById(R.id.imageDialogResultWin);
 
 
-        if(!win){
-            imageView.setVisibility(View.GONE);
-        }
+        if(win){
+           imageView.setVisibility(View.VISIBLE);
+        }else{
+		   imageView.setVisibility(View.GONE);
+		}
 
         builder.setView(v)
                 // Add action buttons
                 .setPositiveButton("New Game", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        StartViewModel.resetChronometer();
-                        StartViewModel.startChronometer();
+                    StartViewModel.resetChronometer();
+                    StartViewModel.startChronometer();
                     }
                 })
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
