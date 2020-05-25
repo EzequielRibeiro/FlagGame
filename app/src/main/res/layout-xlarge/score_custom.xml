@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/textViewFlags"
-        android:layout_width="75dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="TextView"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,12 +23,12 @@
 
     <TextView
         android:id="@+id/textViewHit"
-        android:layout_width="75dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="TextView"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textViewTime"
@@ -37,12 +37,12 @@
 
     <TextView
         android:id="@+id/textViewTime"
-        android:layout_width="75dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="TextView"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/textViewScore"
@@ -51,12 +51,12 @@
 
     <TextView
         android:id="@+id/textViewScore"
-        android:layout_width="75dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="TextView"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

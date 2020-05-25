@@ -11,4 +11,11 @@
     <string name="aviso">Nome do aplicativo: \n Flag 2020 \n\n Versão: \n 1.0 \n\n Obrigado por fazer o download! \n\n Se encontrar algum erro ou sugestões para a aplicação, entre em contato conosco pelo e-mail: aplicativoparamobile@gmail.com \n\n Desenvolvido por: Ezequiel A. Ribeiro</string>
     <string name="start_game">JOGAR</string>
     <string name="want_to_exit">Sair da partida ?</string>
+    <string name="menu_help">Ajuda</string>
+    <string name="you_win_the_game">Você ganha o jogo se indicar os nomes das bandeiras e símbolos. Para cada símbolo correto, você recebe uma pontuação tripla e recupera uma estrela perdida. 5 estrelas perdidas, você perde o jogo.</string>
+    <string name="how_to_win">Como vencer</string>
+    <string name="example">Examplo:</string>
+    <string name="the_game_has">O jogo tem x1 bandeiras e x2 símbolos que foram retirados dessas bandeiras.</string>
+    <string name="the_winner_will_receive_a_trophy">O vencedor receberá um troféu.</string>
+    <string name="boa_sorte">Boa Sorte !</string>
 </resources>

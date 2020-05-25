@@ -1,17 +1,14 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Start;
 
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import androidx.appcompat.widget.Toolbar;
+
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -119,7 +116,7 @@ public class StartFragment extends Fragment {
         savedInstanceState.putInt("score",StartViewModel.SCORE);
         savedInstanceState.putInt("hit",StartViewModel.HIT);
         savedInstanceState.putInt("error",StartViewModel.ERROR);
-        savedInstanceState.putInt("positioncurrent",StartViewModel.POSITIONCURRENT);
+        savedInstanceState.putInt("positioncurrent",StartViewModel.POSITIONFLAG);
         Log.e("acti: ","onsave");
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -137,14 +134,14 @@ public class StartFragment extends Fragment {
             else if(!savedInstanceState.containsKey("error")){
                 savedInstanceState.putInt("error",StartViewModel.ERROR);}
             else if(!savedInstanceState.containsKey("positioncurrent")){
-                savedInstanceState.putInt("positioncurrent", StartViewModel.POSITIONCURRENT);
+                savedInstanceState.putInt("positioncurrent", StartViewModel.POSITIONFLAG);
             }
 
             Log.e("score: ", Integer.toString(savedInstanceState.getInt("score")));
             StartViewModel.SCORE = savedInstanceState.getInt("score");
             StartViewModel.HIT   = savedInstanceState.getInt("hit");
             StartViewModel.ERROR = savedInstanceState.getInt("error");
-            StartViewModel.POSITIONCURRENT = savedInstanceState.getInt("positioncurrent");
+            StartViewModel.POSITIONFLAG = savedInstanceState.getInt("positioncurrent");
         }
 
         startViewModel.StartGame(getResources(),root,getFragmentManager());

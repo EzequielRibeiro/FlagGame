@@ -26,10 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Chronometer;
 import android.widget.ImageView;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -75,10 +72,9 @@ public class StartViewModel extends ViewModel {
     private Animation animationButton;
     private static TextView text_points_value;
     private static RatingBar ratingBar;
-    private MediaPlayer playSound;
     private Context context;
     public static Chronometer CHRONOMETER;
-    public static int POSITIONCURRENT = 0;
+    public static int POSITIONFLAG = 0;
     public static int SCORE = 0;
     public static int HIT = 0;
     public static int ERROR = 0;
@@ -87,6 +83,7 @@ public class StartViewModel extends ViewModel {
     private static int POINTSPOSITION = 10;
     private FragmentManager fragmentManager;
     private View view;
+
 
     private static List<Score> itemScore;
 
@@ -222,23 +219,22 @@ public class StartViewModel extends ViewModel {
         }
 
         nextFlag();
-
     }
 
     public void nextFlag() {
 
         //increase points
-        if(POSITIONCURRENT == POINTSPOSITION - 1){
+        if(POSITIONFLAG == POINTSPOSITION - 1){
             POINTSADD += 100;
             POINTSLESS += 50;
             POINTSPOSITION += 10;
         }
 
         //show result game and save score
-        if (POSITIONCURRENT == flagList.size() || ratingBar.getRating() == 0) {
+        if (flagList.size() == POSITIONFLAG || ratingBar.getRating() == 0) {
             //game result save to database
 
-            if(flagList.size()  == HIT){
+            if(POSITIONFLAG == HIT){
                 showResult(true);
                 sendPlayerWinsToFirebase();
 
@@ -253,13 +249,13 @@ public class StartViewModel extends ViewModel {
         }else{
 
             //imageViewFlag.setImageDrawable(res.getDrawable(flagList.get(POSITIONCURRENT).getIdFlag()));
-            changeFlagView(flagList.get(POSITIONCURRENT).getIdFlag());
+            changeFlagView(flagList.get(POSITIONFLAG).getIdFlag());
             text_points_value.setText(Integer.toString(SCORE));
             int ii;
 
             if(options.size() == 0) {
                 //adiciona na lista de opções o nome da bandeira correta
-                options.add(flagList.get(POSITIONCURRENT).getFragName());
+                options.add(flagList.get(POSITIONFLAG).getFragName());
 
                 //adiciona na lista de opções nomes aleatórios de bandeiras
                 do {
@@ -289,8 +285,8 @@ public class StartViewModel extends ViewModel {
 
         }
 
-      //  Log.e(MainActivity.TAG,"FLAG: "+ flagList.get(POSITIONCURRENT).getFragName());
-      //  Log.e(MainActivity.TAG,"Position: "+POSITIONCURRENT+" HIT: "+HIT+" SIZE: "+ flagList.size() );
+        Log.e(MainActivity.TAG,"FLAG: "+ flagList.get(POSITIONFLAG).getFragName());
+        Log.e(MainActivity.TAG,"Position: "+ POSITIONFLAG +" HIT: "+HIT+" SIZE: "+ flagList.size() );
 
     }
 
@@ -307,13 +303,13 @@ public class StartViewModel extends ViewModel {
             bundle.putString("MAXSCORE", String.valueOf(SCORE));
             bundle.putString("COUNTRY", country);
             bundle.putString("TIME",getTime());
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+            mFirebaseAnalytics.logEvent("vencedor", bundle);
 
     }
 
     public void showResult(boolean win){
 
-        DialogFragmentShowResult dialog = DialogFragmentShowResult.newInstance(SCORE,POSITIONCURRENT,HIT,win);
+        DialogFragmentShowResult dialog = DialogFragmentShowResult.newInstance(win);
         dialog.setCancelable(false);
         dialog.show(fragmentManager,"");
 
@@ -406,6 +402,7 @@ public class StartViewModel extends ViewModel {
                     button3.setEnabled(true);
                     button4.setEnabled(true);
                     button5.setEnabled(true);
+
                 }
             };
             timer.start();
@@ -494,12 +491,12 @@ public class StartViewModel extends ViewModel {
 
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_DATE, currentDateandTime);
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_TIME, StartViewModel.getTime());
-            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_FLAGS, POSITIONCURRENT);
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_FLAGS, POSITIONFLAG);
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_HIT, HIT);
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE, SCORE);
 
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
-            POSITIONCURRENT = 0;
+            POSITIONFLAG = 0;
             POINTSADD = 100;
             POINTSLESS = 50;
             POINTSPOSITION = 10;
@@ -509,8 +506,7 @@ public class StartViewModel extends ViewModel {
             ratingBar.setRating(5);
             pauseChronometer();
             resetChronometer();
-            flagList.clear();
-            options.clear();
+           // flagList.clear();
 
             if (newRowId > 0) {
                 Log.e(MainActivity.TAG, "salvo no banco");
@@ -541,6 +537,9 @@ public class StartViewModel extends ViewModel {
 
     private class ButtonOptionListiner implements View.OnClickListener {
 
+        MediaPlayer playSound ;
+
+
         @Override
         public void onClick(View v) {
 
@@ -551,11 +550,12 @@ public class StartViewModel extends ViewModel {
             button5.setEnabled(false);
             options.clear();
 
+
             Button button = (Button) v;
 
-            if (button.getText().equals(flagList.get(POSITIONCURRENT).getFragName())) {
+            if (button.getText().equals(flagList.get(POSITIONFLAG).getFragName())) {
 
-                if(flagList.get(POSITIONCURRENT).isSymbol()){
+                if(flagList.get(POSITIONFLAG).isSymbol()){
 
                     ratingBar.setRating(ratingBar.getRating() + 1);
                     valuePoint = "+".concat(Integer.toString(POINTSADD * 3));
@@ -584,8 +584,8 @@ public class StartViewModel extends ViewModel {
                 playSound.start();
 
             text_points_value.startAnimation(animationButton);
-            POSITIONCURRENT++;
 
+            POSITIONFLAG++;
             nextFlag();
 
         }

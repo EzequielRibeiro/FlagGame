@@ -11,6 +11,7 @@
     <string name="menu_start">Game Started</string>
     <string name="menu_privacy">Privacy Policy</string>
     <string name="menu_about">About</string>
+    <string name="menu_help">Help</string>
     <string name="aviso">App Name: \n  Flag 2020 \n\nVersion: \n  1.0\n\nThanks for downloading! \n\nIf you find any bugs or have any suggestions for the application, please contact us by email: aplicativoparamobile@gmail.com\n\n Developed by: Ezequiel A. Ribeiro</string>
 
     <string name="home_second" translatable="false">Home Second</string>
@@ -20,4 +21,10 @@
     <string name="start_game">START GAME</string>
     <string name="time">TIME</string>
     <string name="want_to_exit">Are you sure you want to exit?</string>
+    <string name="you_win_the_game">You win the game if you indicate the names of the flags and symbols. For each correct symbol you receive a triple score and recover a lost star. 5 stars lost you lose the game.</string>
+    <string name="how_to_win">How to win</string>
+    <string name="example">Example:</string>
+    <string name="the_game_has">The game has x1 flags and x2 symbols that have been retired from those flags.</string>
+    <string name="the_winner_will_receive_a_trophy">The winner will receive a trophy</string>
+    <string name="boa_sorte">Good luck !</string>
 </resources>

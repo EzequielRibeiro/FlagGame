@@ -12,6 +12,12 @@
             android:id="@+id/nav_privacy"
             android:icon="@android:drawable/ic_menu_view"
             android:title="@string/menu_privacy" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="@string/menu_help" />
+
         <item
             android:id="@+id/nav_about"
             android:icon="@android:drawable/ic_menu_info_details"
