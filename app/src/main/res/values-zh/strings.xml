@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name" >世界国旗游戏</string>
+    <string name="nav_header_title" >世界国旗游戏</string>
+    <string name="action_settings" >设定值</string>
+
+    <string name="menu_home" >家</string>
+    <string name="menu_start">游戏开始</string>
+    <string name="menu_privacy">隐私政策</string>
+    <string name="menu_about">关于</string>
+    <string name="menu_help">救命</string>
+    <string name="aviso">应用名称: \n  世界国旗游戏 \n\nVersion: \n  1.0\n\n感谢下载! \n\n如果您发现任何错误或对应用程序有任何建议，请通过电子邮件与我们联系: aplicativoparamobile@gmail.com\n\n</string>
+
+    <string name="hits">命中</string>
+    <string name="flags">旗</string>
+    <string name="score">标点</string>
+    <string name="start_game">开始游戏</string>
+    <string name="time">时间</string>
+    <string name="want_to_exit">您确定要离开吗？</string>
+    <string name="you_win_the_game">如果您指定符号和符号的名称，您将赢得比赛。 对于每个正确的符号，您将获得3分并恢复丢失的星星。 5星输，你输了比赛。</string>
+    <string name="how_to_win">如何取胜</string>
+    <string name="example">例：</string>
+    <string name="the_game_has">游戏中有x1个标志和x2个标志已从这些标志中退役。</string>
+    <string name="the_winner_will_receive_a_trophy">优胜者将获得奖杯</string>
+    <string name="boa_sorte">祝好运 ！</string>
+</resources>

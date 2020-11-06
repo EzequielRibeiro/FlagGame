@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name" translatable="false">Flag 2020</string>
+    <string name="app_name">Flag Game</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
-    <string name="nav_header_title" translatable="false">Flag 2020</string>
+    <string name="nav_header_title" >Flag Game</string>
     <string name="nav_header_subtitle" translatable="false">v1.0</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home" translatable="false">Home</string>
+    <string name="menu_home">Home</string>
     <string name="menu_start">Game Started</string>
     <string name="menu_privacy">Privacy Policy</string>
     <string name="menu_about">About</string>
