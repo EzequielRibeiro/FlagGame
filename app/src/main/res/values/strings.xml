@@ -27,4 +27,10 @@
     <string name="the_game_has">The game has x1 flags and x2 symbols that have been retired from those flags.</string>
     <string name="the_winner_will_receive_a_trophy">The winner will receive a trophy</string>
     <string name="boa_sorte">Good luck !</string>
+    <string name="signin_other_error">Google Play Game: Login failed</string>
+    <string name="menu_rank">Global Rank</string>
+    <string name="web_client_id" translatable="false">562105401196-3la0as6svlg2v1mf4sdj40plo0kcgn68.apps.googleusercontent.com</string>
+    <string name="app_id">562105401196</string>
+    <string name="leaderboard_id">CgkI7P7egK4QEAIQAw</string>
+    <string name="global_score">Global Score</string>
 </resources>

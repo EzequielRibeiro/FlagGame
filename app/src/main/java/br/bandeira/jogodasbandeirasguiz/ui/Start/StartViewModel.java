@@ -34,6 +34,8 @@ import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.games.Games;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
@@ -50,6 +52,8 @@ import br.bandeira.jogodasbandeirasguiz.MainActivity;
 import br.bandeira.jogodasbandeirasguiz.R;
 import br.bandeira.jogodasbandeirasguiz.Score;
 import br.bandeira.jogodasbandeirasguiz.ScoreDbHelper;
+
+import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.TAG;
 
 
 public class StartViewModel extends ViewModel {
@@ -221,6 +225,18 @@ public class StartViewModel extends ViewModel {
         nextFlag();
     }
 
+    public static int getScoreValueTime(String time){
+        String[] units = time.split(":");
+        int hour    = Integer.parseInt(units[0]);
+        int minutes = Integer.parseInt(units[1]);
+        int seconds = Integer.parseInt(units[2]);
+        int duration = (60 * 60 * hour) + (minutes * 60) + seconds;
+        double percet = duration * 0.01;
+
+        return (int) (SCORE * percet / 100);
+
+    }
+
     public void nextFlag() {
 
         //increase points
@@ -233,11 +249,13 @@ public class StartViewModel extends ViewModel {
         //show result game and save score
         if (flagList.size() == POSITIONFLAG || ratingBar.getRating() == 0) {
             //game result save to database
+            Log.e(TAG,"Score:"+SCORE);
+            SCORE = SCORE - getScoreValueTime(getTime());
+            Log.e(TAG,"Score:"+SCORE);
 
             if(POSITIONFLAG == HIT){
                 showResult(true);
                 sendPlayerWinsToFirebase();
-
             }
             else {
                 showResult(false);
@@ -496,6 +514,12 @@ public class StartViewModel extends ViewModel {
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE, SCORE);
 
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
+
+           if(GoogleSignIn.getLastSignedInAccount(context) != null){
+                Games.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context))
+                        .submitScore(context.getString(R.string.leaderboard_id), SCORE);
+           }
+
             POSITIONFLAG = 0;
             POINTSADD = 100;
             POINTSLESS = 50;
@@ -515,6 +539,7 @@ public class StartViewModel extends ViewModel {
             }
 
         }
+
 
 
     }

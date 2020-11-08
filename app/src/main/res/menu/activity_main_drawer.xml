@@ -8,6 +8,10 @@
             android:id="@+id/nav_home"
             android:icon="@android:drawable/ic_menu_slideshow"
             android:title="@string/menu_home" />
+        <!--<item
+            android:id="@+id/nav_rank"
+            android:icon="@android:drawable/ic_menu_mapmode"
+            android:title="@string/menu_rank" />-->
         <item
             android:id="@+id/nav_privacy"
             android:icon="@android:drawable/ic_menu_view"

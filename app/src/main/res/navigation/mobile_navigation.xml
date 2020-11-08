@@ -11,6 +11,17 @@
         android:label="@string/app_name"
         tools:layout="@layout/fragment_home" />
 
+
+    <fragment
+        android:id="@+id/nav_rank"
+        android:name="br.bandeira.jogodasbandeirasguiz.ui.Rank.RankFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_rank" >
+        <action
+            android:id="@+id/action_nav_rank_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
     <fragment
         android:id="@+id/nav_start"
         android:name="br.bandeira.jogodasbandeirasguiz.ui.Start.StartFragment"
@@ -27,13 +38,21 @@
         android:id="@+id/nav_about"
         android:name="br.bandeira.jogodasbandeirasguiz.ui.About.AboutFragment"
         android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_nav_about_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_privacy"
         android:name="br.bandeira.jogodasbandeirasguiz.ui.Privacy.PrivacyFragment"
         android:label="@string/menu_privacy"
-        tools:layout="@layout/fragment_privacy" />
+        tools:layout="@layout/fragment_privacy" >
+        <action
+            android:id="@+id/action_nav_privacy_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_help"

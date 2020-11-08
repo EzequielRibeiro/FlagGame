@@ -21,4 +21,5 @@
     <string name="app_name" translatable="false">Bandeiras Game</string>
     <string name="nav_header_title">Bandeiras Game</string>
     <string name="menu_home">Início</string>
+    <string name="global_score">Global Score</string>
 </resources>

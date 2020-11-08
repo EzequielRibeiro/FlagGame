@@ -22,4 +22,5 @@
     <string name="the_game_has">游戏中有x1个标志和x2个标志已从这些标志中退役。</string>
     <string name="the_winner_will_receive_a_trophy">优胜者将获得奖杯</string>
     <string name="boa_sorte">祝好运 ！</string>
+    <string name="global_score">Global Score</string>
 </resources>

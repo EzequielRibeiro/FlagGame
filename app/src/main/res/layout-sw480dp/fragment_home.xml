@@ -8,19 +8,38 @@
     android:background="@drawable/side_nav_bar"
     tools:context=".ui.Home.HomeFragment">
 
+
+    <Button
+        android:id="@+id/buttonScoreGlobal"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:layout_width="180dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/button_custom"
+        android:text="@string/global_score"
+        android:textColor="@color/colorLight"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonStart"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/buttonStart"
         style="@android:style/Widget.DeviceDefault.Button.Borderless"
-        android:layout_width="200dp"
+        android:layout_width="180dp"
         android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/button_custom"
         android:text="@string/start_game"
         android:textColor="@color/colorLight"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/buttonScoreGlobal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
