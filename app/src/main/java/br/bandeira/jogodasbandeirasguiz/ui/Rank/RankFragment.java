@@ -1,9 +1,6 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Rank;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,17 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
-
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.games.Games;
+
 import com.google.android.gms.games.Player;
 import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,11 +28,10 @@ import com.google.firebase.auth.PlayGamesAuthProvider;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import br.bandeira.jogodasbandeirasguiz.R;
 
-import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.RC_SIGN_IN;
 import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.TAG;
+
 
 public class RankFragment extends Fragment  {
 
@@ -68,9 +55,9 @@ public class RankFragment extends Fragment  {
 
     }
 
-
+/*
     private void currentPlayer(final GoogleSignInAccount acc){
-        PlayersClient playersClient = Games.getPlayersClient(getActivity(), acc);
+        PlayersClient playersClient =   getPlayersClient(getActivity(), acc);
         playersClient.getCurrentPlayer().addOnSuccessListener(new OnSuccessListener<Player>() {
             @Override
             public void onSuccess(Player player) {
@@ -91,12 +78,9 @@ public class RankFragment extends Fragment  {
                 Log.e(TAG,"ERROR_FETCH_PLAYER_PROFILE: " + e);
             }
         });
-
-
     }
 
-
-
+ */
 
 
     @Override

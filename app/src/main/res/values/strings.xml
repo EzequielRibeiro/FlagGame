@@ -33,4 +33,6 @@
     <string name="app_id">562105401196</string>
     <string name="leaderboard_id">CgkI7P7egK4QEAIQAw</string>
     <string name="global_score">Global Score</string>
+    <string name="ad_inter_id">ca-app-pub-0822808376839371/8886805116</string>
+    <string name="ad_banner_exit_id">ca-app-pub-0822808376839371/4244751435</string>
 </resources>

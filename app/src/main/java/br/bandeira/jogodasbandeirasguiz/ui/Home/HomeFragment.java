@@ -1,6 +1,8 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Home;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,10 +24,14 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -34,7 +40,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesSignInClient;
+import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +49,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import br.bandeira.jogodasbandeirasguiz.R;
 import br.bandeira.jogodasbandeirasguiz.Score;
@@ -53,8 +61,11 @@ public class HomeFragment extends Fragment {
 
     private static final int RC_LEADERBOARD_UI = 9004;
     public static int RC_SIGN_IN = 9001;
+
+    public static String playerName = "";
+    public static String serverAuthToken = "";
     public static String TAG = "Flag Game";
-    public static boolean isLogged = false;
+    public boolean isAuthenticated = false;
     private HomeViewModel homeViewModel;
     private ListView listView;
     private View root;
@@ -63,7 +74,11 @@ public class HomeFragment extends Fragment {
     private Button buttonStart, buttonScoreGlobal;
     private NavController navController;
     private AdView mAdView;
-    private InterstitialAd mInterstitialAd;
+    public static InterstitialAd mInterstitialAd;
+
+    private GamesSignInClient gamesSignInClient;
+
+    private TextView textViewId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -72,18 +87,19 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_controller_fragment);
+
+        textViewId = root.findViewById(R.id.textViewIdPlayer);
 
         buttonScoreGlobal = root.findViewById(R.id.buttonScoreGlobal);
         buttonScoreGlobal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (isLogged) {
-                    showLeaderboard();
-                } else {
-                    if (isGooglePlayServicesAvailable())
-                        startSignInIntent();
+                if (isAuthenticated) {
+                     showLeaderboard();
+                } else{
+                     gamesSignInClient();
                 }
             }
         });
@@ -102,6 +118,11 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
+                if(mInterstitialAd != null)
+                    showInterstitial(getContext());
+
+              //  Navigation.findNavController(v).navigate(R.id.nav_start);
+
                 navController.popBackStack(R.id.nav_start, true);
                 navController.navigate(R.id.nav_start);
 
@@ -115,71 +136,104 @@ public class HomeFragment extends Fragment {
                 android.R.layout.simple_list_item_1, items);
         listView.setAdapter(ADAPTER);
 
-        mInterstitialAd = new InterstitialAd(getContext());
-        mInterstitialAd.setAdUnitId("ca-app-pub-0822808376839371/8886805116");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
-            }
 
-        });
+        loadAdInter(getContext());
 
-        mAdView = root.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView = root.findViewById(R.id.adView);
         mAdView.loadAd(adRequest);
-
-
         mAdView.setAdListener(new AdListener() {
             @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
                 ConstraintLayout constraintLayout = root.findViewById(R.id.constraintLayout_frame_home);
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
                 params.height = 0;
                 mAdView.setLayoutParams(params);
             }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when an ad opens an overlay that
-                // covers the screen.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the user is about to return
-                // to the app after tapping on an ad.
-            }
         });
+
+
+        if (isGooglePlayServicesAvailable())
+              signInSilently();
 
         return root;
     }
 
-    public void updateUI(GoogleSignInAccount account) {
+    private static void loadAdInter(Context context) {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        String id = context.getString(R.string.ad_inter_id);
+        // id = "ca-app-pub-3940256099942544/1033173712"; // id to test Ad
 
-        if (account != null) {
+        InterstitialAd.load(context, id, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        interstitialAdListner();
+                        Log.i("InterstitialAd", "loaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd = null;
+
+                    }
+                });
+
+    }
+
+    private static void interstitialAdListner() {
+        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when fullscreen content is dismissed.
+                mInterstitialAd = null;
+                Log.d("TAG", "The ad was dismissed.");
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                // Called when fullscreen content failed to show.
+                mInterstitialAd = null;
+                Log.d("TAG", "The ad failed to show.");
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when fullscreen content is shown.
+                // Make sure to set your reference to null so you don't
+                // show it a second time.
+                mInterstitialAd = null;
+                Log.d("TAG", "The ad was shown.");
+            }
+        });
+
+
+    }
+
+    public static void showInterstitial(Context context) {
+
+        Activity activity = (Activity) context;
+
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(activity);
+            Log.d("InterstitialAd", "not null");
+        } else {
+            Log.d("InterstitialAd", "null");
+        }
+
+    }
+
+    public void updateUI(boolean isSuccessful) {
+
+        if (isSuccessful) {
             Toast.makeText(getContext(), "Signed Google Game Play successfully", Toast.LENGTH_LONG).show();
-            isLogged = true;
+            isAuthenticated = true;
+
         } else {
             Toast.makeText(getContext(), "Signed Google Game Play failed", Toast.LENGTH_LONG).show();
-            isLogged = false;
+            isAuthenticated = false;
         }
 
     }
@@ -187,17 +241,8 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         navController.popBackStack(R.id.nav_start, true);
-
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        } else {
-            Log.d("TAG", "The interstitial wasn't loaded yet.");
-        }
-
-        if (isGooglePlayServicesAvailable())
-              signInSilently();
-
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -208,8 +253,11 @@ public class HomeFragment extends Fragment {
             if (result.isSuccess()) {
                 // The signed in account is stored in the result.
                 GoogleSignInAccount signedInAccount = result.getSignInAccount();
-                updateUI(signedInAccount);
-                showLeaderboard();
+                if(signedInAccount != null)
+                    if (signedInAccount.isExpired())
+                          updateUI(false);
+                    else updateUI(true);
+
 
             } else {
                 String message = result.getStatus().getStatusMessage();
@@ -222,42 +270,44 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    public String getPlayeriD(){
+
+        PlayGames.getPlayersClient(getActivity()).getCurrentPlayer().addOnCompleteListener(mTask -> {
+                  playerName = mTask.getResult().getDisplayName();
+                }
+        );
+        return playerName;
+    }
+
     public void signInSilently() {
 
-        GoogleSignInOptions signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN;
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+        gamesSignInClient = PlayGames.getGamesSignInClient(getActivity());
 
-        if (GoogleSignIn.hasPermissions(account, signInOptions.getScopeArray())) {
-            // Already signed in.
-            // The signed in account is stored in the 'account' variable.
-            GoogleSignInAccount signedInAccount = account;
-            updateUI(signedInAccount);
-            // currentPlayer(signedInAccount);
-        } else {
-            // Haven't been signed-in before. Try the silent sign-in first.
-            GoogleSignInClient signInClient = GoogleSignIn.getClient(getContext(), signInOptions);
-            signInClient
-                    .silentSignIn()
-                    .addOnCompleteListener(
-                            getActivity(),
-                            new OnCompleteListener<GoogleSignInAccount>() {
-                                @Override
-                                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                                    if (task.isSuccessful()) {
-                                        // The signed in account is stored in the task's result.
-                                        GoogleSignInAccount signedInAccount = task.getResult();
-                                        updateUI(signedInAccount);
+         gamesSignInClient = PlayGames.getGamesSignInClient(getActivity());
+         gamesSignInClient
+                .requestServerSideAccess(getString(R.string.web_client_id),
+                         false)
+                .addOnCompleteListener( task -> {
 
-                                    } else {
-                                        updateUI(null);
-                                    }
-                                }
-                            });
-        }
+                    if (task.isSuccessful()) {
+                        serverAuthToken = task.getResult();
+                    }
+                    isAuthenticated = gamesSignInClient.isAuthenticated().isSuccessful();
+                    updateUI(isAuthenticated);
+
+                });
+
+    }
+
+    private void gamesSignInClient (){
+        if(gamesSignInClient != null)
+                 gamesSignInClient.signIn();
+        isAuthenticated = gamesSignInClient.isAuthenticated().isSuccessful();
+        updateUI(isAuthenticated);
     }
 
     private void showLeaderboard() {
-        Games.getLeaderboardsClient(getActivity(), GoogleSignIn.getLastSignedInAccount(getContext()))
+        PlayGames.getLeaderboardsClient(getActivity())
                 .getLeaderboardIntent(getString(R.string.leaderboard_id))
                 .addOnSuccessListener(new OnSuccessListener<Intent>() {
                     @Override
@@ -265,6 +315,9 @@ public class HomeFragment extends Fragment {
                         startActivityForResult(intent, RC_LEADERBOARD_UI);
                     }
                 });
+
+
+
     }
 
     private void signOut() {
@@ -275,17 +328,9 @@ public class HomeFragment extends Fragment {
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        isLogged = false;
+                        isAuthenticated = false;
                     }
                 });
-    }
-
-    private void startSignInIntent() {
-
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(getContext(),
-                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-        Intent intent = signInClient.getSignInIntent();
-        startActivityForResult(intent, RC_SIGN_IN);
     }
 
     public boolean isGooglePlayServicesAvailable() {
@@ -295,17 +340,12 @@ public class HomeFragment extends Fragment {
             Log.e(TAG, "Google Play Services Availability Failed");
             return false;
         } else {
-            Log.e(TAG, "Google Play Services Availability Working.");
+            Log.i(TAG, "Google Play Services Availability Working.");
         }
 
         return googlePlayServicesAvailability.isGooglePlayServicesAvailable(getContext()) == ConnectionResult.SUCCESS;
     }
 
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     public void onStart() {
         super.onStart();
@@ -313,6 +353,7 @@ public class HomeFragment extends Fragment {
 
     public void onDestroy() {
         super.onDestroy();
+        signOut();
 
     }
 

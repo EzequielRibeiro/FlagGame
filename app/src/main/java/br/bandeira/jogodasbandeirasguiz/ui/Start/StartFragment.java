@@ -48,7 +48,7 @@ public class StartFragment extends Fragment {
         StartViewModel.CHRONOMETER = root.findViewById(R.id.chronometer);
         StartViewModel.CHRONOMETER.setTextColor(root.getResources().getColor(R.color.colorGreen));
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+        navController = Navigation.findNavController(getActivity(), R.id.nav_host_controller_fragment);
 
         OnBackPressedCallback callback = new OnBackPressedCallback(true) {
             @Override
@@ -103,7 +103,7 @@ public class StartFragment extends Fragment {
         boolean fragmentPopped = manager.popBackStackImmediate(backStateName, 0);
         if (!fragmentPopped) { //fragment not in back stack, create it.
             FragmentTransaction ft = manager.beginTransaction();
-            ft.replace(R.id.nav_host_fragment,homeFragment);
+            ft.replace(R.id.nav_host_controller_fragment,homeFragment);
             ft.addToBackStack(backStateName);
             ft.commit();
             ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.menu_home));

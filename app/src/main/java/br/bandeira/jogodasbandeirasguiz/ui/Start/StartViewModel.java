@@ -1,5 +1,6 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Start;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.PlayGames;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
@@ -516,8 +518,10 @@ public class StartViewModel extends ViewModel {
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
 
            if(GoogleSignIn.getLastSignedInAccount(context) != null){
-                Games.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context))
-                        .submitScore(context.getString(R.string.leaderboard_id), SCORE);
+               /* PlayGames.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context))
+                        .submitScore(context.getString(R.string.leaderboard_id), SCORE);*/
+               Activity activity = (Activity) context;
+                PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id),SCORE);
            }
 
             POSITIONFLAG = 0;

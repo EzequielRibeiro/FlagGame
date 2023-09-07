@@ -4,28 +4,22 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 
 import br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel;
 
@@ -98,7 +92,7 @@ public class DialogFragmentShowResult extends DialogFragment {
                 .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_fragment);
+                        NavController navController = Navigation.findNavController(getActivity(), R.id.nav_host_controller_fragment);
                         navController.popBackStack();
                         //Navigation.findNavController(view).navigate(R.id.nav_home);
                     }
@@ -114,12 +108,15 @@ public class DialogFragmentShowResult extends DialogFragment {
                 // Code to be executed when an ad finishes loading.
             }
 
+
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
                 ConstraintLayout constraintLayout = v.findViewById(R.id.constantLayoutDialogResult);
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) constraintLayout.getLayoutParams();
                 params.height = 0;
                 mAdViewResult.setLayoutParams(params);
+
             }
 
             @Override
@@ -131,11 +128,6 @@ public class DialogFragmentShowResult extends DialogFragment {
             @Override
             public void onAdClicked() {
                 // Code to be executed when the user clicks on an ad.
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
             }
 
             @Override

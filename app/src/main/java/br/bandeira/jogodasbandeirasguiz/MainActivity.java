@@ -1,15 +1,11 @@
 package br.bandeira.jogodasbandeirasguiz;
 
-import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,16 +14,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -36,18 +28,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.multidex.MultiDex;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+import com.google.android.gms.games.PlayGamesSdk;
 import java.util.Random;
 
 import br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel;
@@ -63,16 +55,22 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private TextView textViewId;
 
+    private AlertDialog alertDialog;
+    private AdView adView;
+    private  NavController navController;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         MultiDex.install(this);
-
+        PlayGamesSdk.initialize(this);
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+                loadAdMobExit();
             }
         });
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -89,7 +87,11 @@ public class MainActivity extends AppCompatActivity {
                 .setDrawerLayout(drawer)
                 .build();
 
-        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_controller_fragment);
+        navController = navHostFragment.getNavController();
+
+       // NavController navController = Navigation.findNavController(this, R.id.nav_host_controller_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
@@ -173,7 +175,15 @@ public class MainActivity extends AppCompatActivity {
 
         if(drawer.isDrawerOpen(GravityCompat.START))
             drawer.closeDrawer(GravityCompat.START);
-        else
+        else if (navController.getCurrentDestination().getId() == R.id.nav_home) {
+            if (alertDialog != null) {
+                try {
+                    alertDialog.show();
+                }catch (IllegalStateException e){
+                    e.printStackTrace();
+                }
+            }
+        } else
             super.onBackPressed();
     }
 
@@ -189,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
 
         StartViewModel.saveScore(getApplicationContext());
-        final NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        final NavController navController = Navigation.findNavController(this, R.id.nav_host_controller_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
 
     }
@@ -228,6 +238,71 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void loadAdMobExit() {
+        Log.e("Admob","ExitAdmob");
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        //builder.setTitle("Confirm exit");
+        builder.setTitle(R.string.app_name);
+        builder.setIcon(R.mipmap.ic_launcher_round);
+        builder.setMessage("Close the application ?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //System.exit(1);
+                        finishAffinity();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog = builder.create();
+        alertDialog.getWindow().setGravity(Gravity.CENTER);
+
+
+            //alertDialog.getWindow().setGravity(Gravity.BOTTOM);
+
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView = new AdView(this);
+            adView.setAdUnitId(getString(R.string.ad_banner_exit_id));
+            adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+            adView.loadAd(adRequest);
+
+            Log.e("Admob","test device: "+adRequest.isTestDevice(getApplicationContext()));
+
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdLoaded() {
+                    alertDialog.setView(adView);
+
+                }
+
+                @Override
+                public void onAdFailedToLoad(LoadAdError adError) {
+                    //  loadAdStart();
+                }
+
+                @Override
+                public void onAdOpened() {
+                    // Code to be executed when an ad opens an overlay that
+                    // covers the screen.
+                }
+
+                @Override
+                public void onAdClicked() {
+                    // Code to be executed when the user clicks on an ad.
+                }
+
+                @Override
+                public void onAdClosed() {
+                    // Code to be executed when the user is about to return
+                    // to the app after tapping on an ad.
+                }
+            });
+
+        }
 
 
 
