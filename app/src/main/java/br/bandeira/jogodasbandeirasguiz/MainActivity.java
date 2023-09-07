@@ -2,7 +2,10 @@ package br.bandeira.jogodasbandeirasguiz;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAnalytics mFirebaseAnalytics;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
-    private TextView textViewId;
+    private TextView textViewId, textViewVersion;
 
     private AlertDialog alertDialog;
     private AdView adView;
@@ -83,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_about, R.id.nav_privacy,R.id.nav_help)
+                R.id.nav_home, R.id.nav_about, R.id.nav_privacy,R.id.nav_help,R.id.nav_feedback)
                 .setDrawerLayout(drawer)
                 .build();
 
@@ -98,6 +101,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
                 Log.e("destination: ", destination.getLabel().toString());
+                if(destination.getLabel().toString().equals(getString(R.string.menu_about))){
+
+                }
+
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                //it's possible to do more actions on several items, if there is a large amount of items I prefer switch(){case} instead of if()
+
+                if (id == R.id.nav_feedback) {
+                    feedBack();
+                }
+                //This is for maintaining the behavior of the Navigation view
+                NavigationUI.onNavDestinationSelected(menuItem, navController);
+                //This is for closing the drawer after acting on it
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
             }
         });
 
@@ -107,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         View headerView = navigationView.getHeaderView(0);
         textViewId = (TextView) headerView.findViewById(R.id.textViewIdPlayer);
+        textViewVersion = headerView.findViewById(R.id.textViewVersion);
+        textViewVersion.setText(BuildConfig.VERSION_NAME);
 
         if(!sharedPreferences.contains("id")){
             editor.putString("id","").commit();
@@ -213,9 +239,23 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_settings:
                 Sound(MainActivity.this);
                 return true;
+            case R.id.action_feedback:
+                feedBack();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void feedBack() {
+        final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException ex) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+
     }
 
     public void onResume(){

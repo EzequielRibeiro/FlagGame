@@ -58,7 +58,7 @@ public class StartFragment extends Fragment {
 
             }
         };
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         return root;
     }
 
@@ -113,7 +113,7 @@ public class StartFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putInt("score",StartViewModel.SCORE);
+        savedInstanceState.putInt("score",(int)StartViewModel.SCORE);
         savedInstanceState.putInt("hit",StartViewModel.HIT);
         savedInstanceState.putInt("error",StartViewModel.ERROR);
         savedInstanceState.putInt("positioncurrent",StartViewModel.POSITIONFLAG);
@@ -128,7 +128,7 @@ public class StartFragment extends Fragment {
         if (savedInstanceState != null) {
 
             if(!savedInstanceState.containsKey("score")){
-                savedInstanceState.putInt("score",StartViewModel.SCORE);}
+                savedInstanceState.putInt("score",(int)StartViewModel.SCORE);}
             else if(!savedInstanceState.containsKey("hit")){
                 savedInstanceState.putInt("hit",StartViewModel.HIT);}
             else if(!savedInstanceState.containsKey("error")){

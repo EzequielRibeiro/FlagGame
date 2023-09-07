@@ -37,7 +37,7 @@ public class DialogFragmentShowResult extends DialogFragment {
     public static DialogFragmentShowResult newInstance(boolean win) {
         DialogFragmentShowResult frag = new DialogFragmentShowResult();
         Bundle args = new Bundle();
-        args.putInt("score",StartViewModel.SCORE);
+        args.putInt("score",(int)StartViewModel.SCORE);
         args.putInt("flags",StartViewModel.POSITIONFLAG);
         args.putInt("hit",StartViewModel.HIT);
         args.putBoolean("win",win);

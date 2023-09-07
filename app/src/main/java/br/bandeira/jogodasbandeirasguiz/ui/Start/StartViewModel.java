@@ -81,7 +81,7 @@ public class StartViewModel extends ViewModel {
     private Context context;
     public static Chronometer CHRONOMETER;
     public static int POSITIONFLAG = 0;
-    public static int SCORE = 0;
+    public static double SCORE = 0;
     public static int HIT = 0;
     public static int ERROR = 0;
     private static int POINTSADD = 100;
@@ -95,7 +95,7 @@ public class StartViewModel extends ViewModel {
 
     public StartViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue(Integer.toString(SCORE));
+        mText.setValue(String.valueOf((int)SCORE));
         flagList = new ArrayList();
         options = new ArrayList();
 
@@ -138,7 +138,7 @@ public class StartViewModel extends ViewModel {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                text_points_value.setText(Integer.toString(SCORE));
+                text_points_value.setText(String.valueOf((int)SCORE));
                 text_points_value.setTextColor(res.getColor(R.color.colorBlue));
             }
 
@@ -162,7 +162,7 @@ public class StartViewModel extends ViewModel {
         ratingBar.setMax(5);
         ratingBar.setRating(5);
         text_points_value = root.findViewById(R.id.text_points_value);
-        text_points_value.setText(Integer.toString(SCORE));
+        text_points_value.setText(String.valueOf((int)SCORE));
         context = root.getContext();
 
         chronometerSetup();
@@ -227,7 +227,7 @@ public class StartViewModel extends ViewModel {
         nextFlag();
     }
 
-    public static int getScoreValueTime(String time){
+    public static double getScoreValueTime(String time){
         String[] units = time.split(":");
         int hour    = Integer.parseInt(units[0]);
         int minutes = Integer.parseInt(units[1]);
@@ -235,7 +235,15 @@ public class StartViewModel extends ViewModel {
         int duration = (60 * 60 * hour) + (minutes * 60) + seconds;
         double percet = duration * 0.01;
 
-        return (int) (SCORE * percet / 100);
+        String value = String.valueOf(hour)+'.'+ minutes+seconds;
+
+       // return (int) (SCORE * percet / 100);
+
+        try{
+            return Double.parseDouble(value);
+        }catch (NumberFormatException e){
+            return 0.0 ;
+        }
 
     }
 
@@ -251,9 +259,9 @@ public class StartViewModel extends ViewModel {
         //show result game and save score
         if (flagList.size() == POSITIONFLAG || ratingBar.getRating() == 0) {
             //game result save to database
-            Log.e(TAG,"Score:"+SCORE);
-            SCORE = SCORE - getScoreValueTime(getTime());
-            Log.e(TAG,"Score:"+SCORE);
+            Log.i(TAG,"Score:"+SCORE);
+           // SCORE = SCORE - getScoreValueTime(getTime());
+            Log.i(TAG,"Score:"+SCORE);
 
             if(POSITIONFLAG == HIT){
                 showResult(true);
@@ -262,7 +270,6 @@ public class StartViewModel extends ViewModel {
             else {
                 showResult(false);
             }
-
             saveScore(context);
             loadFlags();
 
@@ -270,7 +277,7 @@ public class StartViewModel extends ViewModel {
 
             //imageViewFlag.setImageDrawable(res.getDrawable(flagList.get(POSITIONCURRENT).getIdFlag()));
             changeFlagView(flagList.get(POSITIONFLAG).getIdFlag());
-            text_points_value.setText(Integer.toString(SCORE));
+            text_points_value.setText(String.valueOf((int)SCORE));
             int ii;
 
             if(options.size() == 0) {
@@ -305,8 +312,8 @@ public class StartViewModel extends ViewModel {
 
         }
 
-        Log.e(MainActivity.TAG,"FLAG: "+ flagList.get(POSITIONFLAG).getFragName());
-        Log.e(MainActivity.TAG,"Position: "+ POSITIONFLAG +" HIT: "+HIT+" SIZE: "+ flagList.size() );
+        Log.i(MainActivity.TAG,"FLAG: "+ flagList.get(POSITIONFLAG).getFragName());
+        Log.i(MainActivity.TAG,"Position: "+ POSITIONFLAG +" HIT: "+HIT+" SIZE: "+ flagList.size() );
 
     }
 
@@ -513,7 +520,7 @@ public class StartViewModel extends ViewModel {
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_TIME, StartViewModel.getTime());
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_FLAGS, POSITIONFLAG);
             values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_HIT, HIT);
-            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE, SCORE);
+            values.put(ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE,(int)SCORE);
 
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
 
@@ -521,7 +528,7 @@ public class StartViewModel extends ViewModel {
                /* PlayGames.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context))
                         .submitScore(context.getString(R.string.leaderboard_id), SCORE);*/
                Activity activity = (Activity) context;
-                PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id),SCORE);
+                PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id),(long) SCORE);
            }
 
             POSITIONFLAG = 0;
@@ -586,24 +593,24 @@ public class StartViewModel extends ViewModel {
 
                 if(flagList.get(POSITIONFLAG).isSymbol()){
 
-                    ratingBar.setRating(ratingBar.getRating() + 1);
-                    valuePoint = "+".concat(Integer.toString(POINTSADD * 3));
-                    SCORE += POINTSADD * 3;
+                   // ratingBar.setRating(ratingBar.getRating() + 1);
+                    valuePoint = "+".concat(String.valueOf((int)(POINTSADD - (POINTSADD * getScoreValueTime(getTime())))*3));
+                    SCORE = SCORE + ((POINTSADD - (POINTSADD * getScoreValueTime(getTime())))*3);
                 }else{
-                    valuePoint = "+".concat(Integer.toString(POINTSADD));
-                    SCORE += POINTSADD;
+                    valuePoint = "+".concat(String.valueOf((int)(POINTSADD - (POINTSADD * getScoreValueTime(getTime())))));
+                    SCORE = SCORE + (POINTSADD - (POINTSADD * getScoreValueTime(getTime())));
                 }
 
-                HIT += 1;
+               HIT += 1;
                text_points_value.setTextColor(res.getColor(R.color.colorGreen));
                playSound = MediaPlayer.create(context, R.raw.sound_nice);
 
             } else {
                 ratingBar.setRating(ratingBar.getRating() - 1);
-                SCORE -= POINTSLESS;
+                SCORE = SCORE - (POINTSLESS + (POINTSLESS * getScoreValueTime(getTime()))) ;
                 ERROR += 1;
                 text_points_value.setTextColor(res.getColor(R.color.colorRed));
-                valuePoint = "-".concat(Integer.toString(POINTSLESS));
+                valuePoint = "-".concat(String.valueOf((int)(POINTSLESS + (POINTSLESS * getScoreValueTime(getTime())))));
                 playSound = MediaPlayer.create(context, R.raw.sound_fail);
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("values", Context.MODE_PRIVATE);

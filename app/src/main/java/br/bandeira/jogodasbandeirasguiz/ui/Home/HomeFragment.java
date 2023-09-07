@@ -1,6 +1,10 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Home;
 
 
+import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.pauseChronometer;
+import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.resetChronometer;
+import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.startChronometer;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -189,6 +193,8 @@ public class HomeFragment extends Fragment {
             public void onAdDismissedFullScreenContent() {
                 // Called when fullscreen content is dismissed.
                 mInterstitialAd = null;
+                resetChronometer();
+                startChronometer();
                 Log.d("TAG", "The ad was dismissed.");
             }
 
@@ -196,6 +202,7 @@ public class HomeFragment extends Fragment {
             public void onAdFailedToShowFullScreenContent(AdError adError) {
                 // Called when fullscreen content failed to show.
                 mInterstitialAd = null;
+
                 Log.d("TAG", "The ad failed to show.");
             }
 
@@ -205,6 +212,7 @@ public class HomeFragment extends Fragment {
                 // Make sure to set your reference to null so you don't
                 // show it a second time.
                 mInterstitialAd = null;
+                pauseChronometer();
                 Log.d("TAG", "The ad was shown.");
             }
         });
@@ -228,7 +236,8 @@ public class HomeFragment extends Fragment {
     public void updateUI(boolean isSuccessful) {
 
         if (isSuccessful) {
-            Toast.makeText(getContext(), "Signed Google Game Play successfully", Toast.LENGTH_LONG).show();
+            // Toast.makeText(getContext(), "Signed Google Game Play successfully", Toast.LENGTH_LONG).show();
+            Log.i(TAG,"Signed Google Game Play successfully");
             isAuthenticated = true;
 
         } else {
