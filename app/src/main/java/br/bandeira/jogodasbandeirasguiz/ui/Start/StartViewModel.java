@@ -38,7 +38,11 @@ import android.widget.TextView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.PlayGames;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +59,11 @@ import br.bandeira.jogodasbandeirasguiz.R;
 import br.bandeira.jogodasbandeirasguiz.Score;
 import br.bandeira.jogodasbandeirasguiz.ScoreDbHelper;
 
+import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.RAWSCORE;
 import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.TAG;
+import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.gamesSignInClient;
+import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.isAuthenticated;
+import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.loadScoreOfLeaderBoard;
 
 
 public class StartViewModel extends ViewModel {
@@ -524,12 +532,15 @@ public class StartViewModel extends ViewModel {
 
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
 
-           if(GoogleSignIn.getLastSignedInAccount(context) != null){
-               /* PlayGames.getLeaderboardsClient(context, GoogleSignIn.getLastSignedInAccount(context))
-                        .submitScore(context.getString(R.string.leaderboard_id), SCORE);*/
-               Activity activity = (Activity) context;
-                PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id),(long) SCORE);
-           }
+            if(newRowId > 0) {
+                if(SCORE > RAWSCORE) {
+                    Activity activity = (Activity) context;
+                    PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id), (long) SCORE);
+                    loadScoreOfLeaderBoard(activity);
+                    Log.i(TAG,"Send to Leaderboards");
+                }
+
+            }
 
             POSITIONFLAG = 0;
             POINTSADD = 100;

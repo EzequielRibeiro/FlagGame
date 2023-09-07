@@ -1,15 +1,17 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Home;
 
-
+import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.SCORE;
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.pauseChronometer;
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.resetChronometer;
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.startChronometer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,17 +46,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.games.AnnotatedData;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesSignInClient;
+import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import br.bandeira.jogodasbandeirasguiz.MainActivity;
 import br.bandeira.jogodasbandeirasguiz.R;
 import br.bandeira.jogodasbandeirasguiz.Score;
 import br.bandeira.jogodasbandeirasguiz.StableArrayAdapter;
@@ -66,21 +76,22 @@ public class HomeFragment extends Fragment {
     private static final int RC_LEADERBOARD_UI = 9004;
     public static int RC_SIGN_IN = 9001;
 
+    public static long RAWSCORE = 0;
     public static String playerName = "";
     public static String serverAuthToken = "";
     public static String TAG = "Flag Game";
-    public boolean isAuthenticated = false;
+    public static boolean isAuthenticated = false;
     private HomeViewModel homeViewModel;
     private ListView listView;
     private View root;
     private StableArrayAdapter ADAPTER;
     private List<Score> items;
-    private Button buttonStart, buttonScoreGlobal;
+    private Button buttonStart, buttonScoreGlobal, buttonSign;
     private NavController navController;
     private AdView mAdView;
     public static InterstitialAd mInterstitialAd;
 
-    private GamesSignInClient gamesSignInClient;
+    public static GamesSignInClient gamesSignInClient;
 
     private TextView textViewId;
 
@@ -92,9 +103,25 @@ public class HomeFragment extends Fragment {
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
         navController = Navigation.findNavController(getActivity(), R.id.nav_host_controller_fragment);
-
+        NavigationView navigationView = ((MainActivity)getActivity()).findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        buttonSign = headerView.findViewById(R.id.buttonSigned);
         textViewId = root.findViewById(R.id.textViewIdPlayer);
 
+
+        buttonSign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Button button = (Button) view;
+                String value = button.getText().toString();
+
+                if(value.equalsIgnoreCase("Sign Out")){
+                     signOut();
+                }else
+                    signInSilently();
+            }
+
+        });
         buttonScoreGlobal = root.findViewById(R.id.buttonScoreGlobal);
         buttonScoreGlobal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +130,28 @@ public class HomeFragment extends Fragment {
                 if (isAuthenticated) {
                      showLeaderboard();
                 } else{
-                     gamesSignInClient();
+                   //  gamesSignInClient(getActivity());
+                    Toast toast = Toast.makeText(getActivity(),"Player is not signed in on Google Play. Press Menu and Sign In",Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Login Google Play");
+                    builder.setMessage("Player is not signed in on Google Play. Press Sign In to see the score of the others players.");
+                    builder.setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            gamesSignInClient();
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            buttonSign.setText("Sign In");
+                        }
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
                 }
             }
         });
@@ -156,6 +204,8 @@ public class HomeFragment extends Fragment {
                 mAdView.setLayoutParams(params);
             }
         });
+
+
 
 
         if (isGooglePlayServicesAvailable())
@@ -239,17 +289,38 @@ public class HomeFragment extends Fragment {
             // Toast.makeText(getContext(), "Signed Google Game Play successfully", Toast.LENGTH_LONG).show();
             Log.i(TAG,"Signed Google Game Play successfully");
             isAuthenticated = true;
+            buttonSign.setText("Sign Out");
 
         } else {
-            Toast.makeText(getContext(), "Signed Google Game Play failed", Toast.LENGTH_LONG).show();
+            Log.i(TAG,"Signed Google Game Play failed");
             isAuthenticated = false;
+            buttonSign.setText("Sign in");
         }
 
+    }
+
+
+    public static void loadScoreOfLeaderBoard(Activity activity) {
+
+        PlayGames.getLeaderboardsClient(activity).loadCurrentPlayerLeaderboardScore(activity.getString(R.string.leaderboard_id),
+                        LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_PUBLIC).addOnSuccessListener(leaderboardScoreAnnotatedData -> {
+                            LeaderboardScore scoresResult =  leaderboardScoreAnnotatedData.get();
+                            RAWSCORE = (scoresResult != null ? scoresResult.getRawScore() : 0);
+
+                        });
     }
 
     public void onResume() {
         super.onResume();
         navController.popBackStack(R.id.nav_start, true);
+
+        if(isAuthenticated) {
+            buttonSign.setText("Sign Out");
+            loadScoreOfLeaderBoard(getActivity());
+        }
+        else
+            buttonSign.setText("Sign in");
+
     }
 
 
@@ -263,9 +334,15 @@ public class HomeFragment extends Fragment {
                 // The signed in account is stored in the result.
                 GoogleSignInAccount signedInAccount = result.getSignInAccount();
                 if(signedInAccount != null)
-                    if (signedInAccount.isExpired())
-                          updateUI(false);
-                    else updateUI(true);
+                    if (signedInAccount.isExpired()) {
+                        updateUI(false);
+
+                    }
+                    else {
+                        updateUI(true);
+
+
+                    }
 
 
             } else {
@@ -304,14 +381,25 @@ public class HomeFragment extends Fragment {
                     isAuthenticated = gamesSignInClient.isAuthenticated().isSuccessful();
                     updateUI(isAuthenticated);
 
+                    if(isAuthenticated) {
+                        buttonSign.setText("Sign Out");
+                        loadScoreOfLeaderBoard(getActivity());
+                    }else
+                        buttonSign.setText("Sign In");
+
                 });
 
     }
 
-    private void gamesSignInClient (){
+    public void gamesSignInClient (){
         if(gamesSignInClient != null)
                  gamesSignInClient.signIn();
         isAuthenticated = gamesSignInClient.isAuthenticated().isSuccessful();
+        if(isAuthenticated)
+            Toast.makeText(getActivity(),"Signed Google Game Play successfully",Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getActivity(),"Signed Google Game Play failed",Toast.LENGTH_LONG).show();
+
         updateUI(isAuthenticated);
     }
 
@@ -338,6 +426,7 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         isAuthenticated = false;
+                        buttonSign.setText("Sign In");
                     }
                 });
     }

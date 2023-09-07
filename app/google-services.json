@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "562105401196",
+    "firebase_url": "https://flag-2020.firebaseio.com",
+    "project_id": "flag-2020",
+    "storage_bucket": "flag-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562105401196:android:c8ad2325a66967e8d3fd49",
+        "android_client_info": {
+          "package_name": "br.bandeira.jogodasbandeirasguiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "562105401196-mabrkckkv5lp22h3q4at6nbgj6thm7fu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.bandeira.jogodasbandeirasguiz",
+            "certificate_hash": "47c45f284391ff61a55c8a151d236a6b3cf306a1"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs2szshNzouustjVpKUp0_1MfnCjIkRtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-0822808376839371~6467962482"
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,8 +62,6 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog alertDialog;
     private AdView adView;
     private  NavController navController;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         textViewId = (TextView) headerView.findViewById(R.id.textViewIdPlayer);
         textViewVersion = headerView.findViewById(R.id.textViewVersion);
         textViewVersion.setText(BuildConfig.VERSION_NAME);
-
         if(!sharedPreferences.contains("id")){
             editor.putString("id","").commit();
         }

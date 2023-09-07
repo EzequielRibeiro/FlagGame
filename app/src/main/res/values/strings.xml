@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flag Game</string>
+    <string name="app_name">Flag Challenge</string>
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_title" >Flag Game</string>
@@ -29,9 +29,9 @@
     <string name="boa_sorte">Good luck !</string>
     <string name="signin_other_error">Google Play Game: Login failed</string>
     <string name="menu_rank">Global Rank</string>
-    <string name="web_client_id" translatable="false">562105401196-3la0as6svlg2v1mf4sdj40plo0kcgn68.apps.googleusercontent.com</string>
+    <string name="web_client_id" translatable="false">562105401196-mabrkckkv5lp22h3q4at6nbgj6thm7fu.apps.googleusercontent.com</string>
     <string name="app_id">562105401196</string>
-    <string name="leaderboard_id">CgkI7P7egK4QEAIQAw</string>
+    <string name="leaderboard_id">CgkI7P7egK4QEAIQBA</string>
     <string name="global_score">Global Score</string>
     <string name="ad_inter_id">ca-app-pub-0822808376839371/8886805116</string>
     <string name="ad_banner_exit_id">ca-app-pub-0822808376839371/4244751435</string>
