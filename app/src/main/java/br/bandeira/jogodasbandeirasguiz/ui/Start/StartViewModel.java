@@ -38,6 +38,8 @@ import android.widget.TextView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.PlayGames;
+import com.google.android.gms.games.leaderboard.LeaderboardScore;
+import com.google.android.gms.games.leaderboard.LeaderboardVariant;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -99,6 +101,8 @@ public class StartViewModel extends ViewModel {
     private View view;
 
 
+
+
     private static List<Score> itemScore;
 
     public StartViewModel() {
@@ -106,6 +110,7 @@ public class StartViewModel extends ViewModel {
         mText.setValue(String.valueOf((int)SCORE));
         flagList = new ArrayList();
         options = new ArrayList();
+
 
 
    }
@@ -508,6 +513,7 @@ public class StartViewModel extends ViewModel {
 
     }
 
+
     static public void saveScore(Context context){
 
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy HH:mm");
@@ -532,13 +538,26 @@ public class StartViewModel extends ViewModel {
 
             long newRowId = db.insert(ScoreDbHelper.ScoreEntry.TABLE_NAME, null, values);
 
-            if(newRowId > 0) {
-                if(SCORE > RAWSCORE) {
-                    Activity activity = (Activity) context;
+            if(newRowId < 0) {
+                return;
+            }
+
+            Cursor cursor = db.rawQuery("SELECT MAX("+ScoreDbHelper.ScoreEntry.COLUMN_NAME_SCORE+") FROM "+ScoreDbHelper.ScoreEntry.TABLE_NAME, null);
+            boolean isValue = cursor.moveToFirst();
+
+            Activity activity = (Activity) context;
+            loadScoreOfLeaderBoard(activity);
+
+            if(isValue){
+                long max = cursor.getLong(0);
+                Log.e(TAG,"MAX: "+ max);
+
+              if(max > 0 && RAWSCORE != 0)//ignore negative number
+                if(RAWSCORE < max){
                     PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id), (long) SCORE);
-                    loadScoreOfLeaderBoard(activity);
                     Log.i(TAG,"Send to Leaderboards");
                 }
+
 
             }
 

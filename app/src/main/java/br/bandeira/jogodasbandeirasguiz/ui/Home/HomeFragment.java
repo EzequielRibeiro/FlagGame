@@ -306,7 +306,6 @@ public class HomeFragment extends Fragment {
                         LeaderboardVariant.TIME_SPAN_ALL_TIME,LeaderboardVariant.COLLECTION_PUBLIC).addOnSuccessListener(leaderboardScoreAnnotatedData -> {
                             LeaderboardScore scoresResult =  leaderboardScoreAnnotatedData.get();
                             RAWSCORE = (scoresResult != null ? scoresResult.getRawScore() : 0);
-
                         });
     }
 

@@ -76,7 +76,6 @@ public class StartFragment extends Fragment {
                    public void onClick(DialogInterface dialog, int id) {
 
                        getActivity().onBackPressed();
-
                        startViewModel.saveScore(getContext());
                        StartViewModel.resetChronometer();
                        navController.popBackStack();
