@@ -11,7 +11,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.ClipDrawable;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -33,19 +35,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.TextView;
-
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.games.Games;
+import android.widget.TextView;;
 import com.google.android.gms.games.PlayGames;
-import com.google.android.gms.games.leaderboard.LeaderboardScore;
-import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,18 +47,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
 import br.bandeira.jogodasbandeirasguiz.DialogFragmentShowResult;
 import br.bandeira.jogodasbandeirasguiz.Flag;
 import br.bandeira.jogodasbandeirasguiz.MainActivity;
 import br.bandeira.jogodasbandeirasguiz.R;
 import br.bandeira.jogodasbandeirasguiz.Score;
 import br.bandeira.jogodasbandeirasguiz.ScoreDbHelper;
-
 import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.RAWSCORE;
 import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.TAG;
-import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.gamesSignInClient;
-import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.isAuthenticated;
 import static br.bandeira.jogodasbandeirasguiz.ui.Home.HomeFragment.loadScoreOfLeaderBoard;
 
 
@@ -100,8 +90,8 @@ public class StartViewModel extends ViewModel {
     private FragmentManager fragmentManager;
     private View view;
 
-
-
+    private SharedPreferences sharedPreferences;
+    private MediaPlayer soundNice, soundFail;
 
     private static List<Score> itemScore;
 
@@ -119,9 +109,8 @@ public class StartViewModel extends ViewModel {
 
         animationButton = AnimationUtils.loadAnimation(context, R.anim.bounce);
         // Use bounce interpolator with amplitude 0.2 and frequency 20
-        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 40);
+        MyBounceInterpolator interpolator = new MyBounceInterpolator(0.2, 60);
         animationButton.setInterpolator(interpolator);
-
     }
 
     private void chronometerSetup() {
@@ -177,6 +166,27 @@ public class StartViewModel extends ViewModel {
         text_points_value = root.findViewById(R.id.text_points_value);
         text_points_value.setText(String.valueOf((int)SCORE));
         context = root.getContext();
+      sharedPreferences = context.getSharedPreferences("values", Context.MODE_PRIVATE);
+
+        try {
+
+            Uri myUriNice = Uri.parse("android.resource://"+context.getPackageName()+"/raw/sound_nice");
+            soundNice = new MediaPlayer();
+            soundNice.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            soundNice.setDataSource(context, myUriNice);
+            soundNice.prepare();
+
+            Uri myUriFail = Uri.parse("android.resource://"+context.getPackageName()+"/raw/sound_fail");
+            soundFail = new MediaPlayer();
+            soundFail.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            soundFail.setDataSource(context,myUriFail);
+            soundFail.prepare();
+
+
+
+        }catch (IOException | IllegalArgumentException e){
+            e.printStackTrace();
+        }
 
         chronometerSetup();
 
@@ -283,7 +293,7 @@ public class StartViewModel extends ViewModel {
             else {
                 showResult(false);
             }
-            saveScore(context);
+
             loadFlags();
 
         }else{
@@ -352,6 +362,9 @@ public class StartViewModel extends ViewModel {
         DialogFragmentShowResult dialog = DialogFragmentShowResult.newInstance(win);
         dialog.setCancelable(false);
         dialog.show(fragmentManager,"");
+
+        saveScore(context);
+
 
     }
 
@@ -554,7 +567,7 @@ public class StartViewModel extends ViewModel {
 
               if(max > 0 && RAWSCORE != 0)//ignore negative number
                 if(RAWSCORE < max){
-                    PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id), (long) SCORE);
+                    PlayGames.getLeaderboardsClient(activity).submitScore(context.getString(R.string.leaderboard_id), max);
                     Log.i(TAG,"Send to Leaderboards");
                 }
 
@@ -603,8 +616,6 @@ public class StartViewModel extends ViewModel {
 
     private class ButtonOptionListiner implements View.OnClickListener {
 
-        MediaPlayer playSound ;
-
 
         @Override
         public void onClick(View v) {
@@ -633,7 +644,14 @@ public class StartViewModel extends ViewModel {
 
                HIT += 1;
                text_points_value.setTextColor(res.getColor(R.color.colorGreen));
-               playSound = MediaPlayer.create(context, R.raw.sound_nice);
+
+                if(sharedPreferences.getBoolean("audio",true)){
+
+                    soundNice.seekTo(0);
+                    soundNice.start();
+
+                }
+
 
             } else {
                 ratingBar.setRating(ratingBar.getRating() - 1);
@@ -641,15 +659,15 @@ public class StartViewModel extends ViewModel {
                 ERROR += 1;
                 text_points_value.setTextColor(res.getColor(R.color.colorRed));
                 valuePoint = "-".concat(String.valueOf((int)(POINTSLESS + (POINTSLESS * getScoreValueTime(getTime())))));
-                playSound = MediaPlayer.create(context, R.raw.sound_fail);
-            }
-            SharedPreferences sharedPreferences = context.getSharedPreferences("values", Context.MODE_PRIVATE);
-            boolean audio = sharedPreferences.getBoolean("audio",true);
 
-            if(audio)
-                playSound.start();
+                if(sharedPreferences.getBoolean("audio",true)){
+                    soundFail.start();
+                }
+
+            }
 
             text_points_value.startAnimation(animationButton);
+
 
             POSITIONFLAG++;
             nextFlag();
@@ -658,8 +676,8 @@ public class StartViewModel extends ViewModel {
     }
 
     private class MyBounceInterpolator implements android.view.animation.Interpolator {
-        private double mAmplitude = 1;
-        private double mFrequency = 10;
+        private double mAmplitude;
+        private double mFrequency;
 
         MyBounceInterpolator(double amplitude, double frequency) {
             mAmplitude = amplitude;
