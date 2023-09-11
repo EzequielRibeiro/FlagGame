@@ -29,7 +29,8 @@
     <string name="boa_sorte">Good luck !</string>
     <string name="signin_other_error">Google Play Game: Login failed</string>
     <string name="menu_rank">Global Rank</string>
-    <string name="web_client_id" translatable="false">562105401196-mabrkckkv5lp22h3q4at6nbgj6thm7fu.apps.googleusercontent.com</string>
+    <string name="OAuth_Client_Id" translatable="false">562105401196-8ug4lc1e2uik3tppobs6mipqn7j0brud.apps.googleusercontent.com</string>
+    <string name="OAuth_Client_Id_Debug" translatable="false">562105401196-mabrkckkv5lp22h3q4at6nbgj6thm7fu.apps.googleusercontent.com</string>
     <string name="app_id">562105401196</string>
     <string name="leaderboard_id">CgkI7P7egK4QEAIQBA</string>
     <string name="global_score">Global Score</string>

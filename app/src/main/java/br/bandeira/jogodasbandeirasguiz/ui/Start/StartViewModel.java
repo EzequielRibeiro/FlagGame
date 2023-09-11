@@ -587,9 +587,9 @@ public class StartViewModel extends ViewModel {
            // flagList.clear();
 
             if (newRowId > 0) {
-                Log.e(MainActivity.TAG, "salvo no banco");
+                Log.i(MainActivity.TAG, "salvo no banco");
            } else {
-                Log.e(MainActivity.TAG, "não foi salvo no banco");
+                Log.i(MainActivity.TAG, "não foi salvo no banco");
             }
 
         }

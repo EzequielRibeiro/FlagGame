@@ -1,6 +1,6 @@
 package br.bandeira.jogodasbandeirasguiz.ui.Home;
 
-import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.SCORE;
+
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.pauseChronometer;
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.resetChronometer;
 import static br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel.startChronometer;
@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -46,23 +47,19 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.games.AnnotatedData;
-import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesSignInClient;
-import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-import com.google.android.gms.games.leaderboard.Leaderboards;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import br.bandeira.jogodasbandeirasguiz.MainActivity;
 import br.bandeira.jogodasbandeirasguiz.R;
@@ -366,12 +363,23 @@ public class HomeFragment extends Fragment {
 
     public void signInSilently() {
 
+        boolean isDebuggable =  ( 0 != ( getActivity().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE ) );
+        String apiGoogleGame;
+
+        if(isDebuggable)
+            apiGoogleGame = getString(R.string.OAuth_Client_Id_Debug);
+        else
+            apiGoogleGame = getString(R.string.OAuth_Client_Id);
+
+       // Toast.makeText(getActivity(),"debug:"+isDebuggable,Toast.LENGTH_LONG).show();
+
+        Log.e(TAG,"Compiler: "+isDebuggable);
         gamesSignInClient = PlayGames.getGamesSignInClient(getActivity());
 
          gamesSignInClient = PlayGames.getGamesSignInClient(getActivity());
          gamesSignInClient
-                .requestServerSideAccess(getString(R.string.web_client_id),
-                         false)
+                .requestServerSideAccess(apiGoogleGame,
+                         true)
                 .addOnCompleteListener( task -> {
 
                     if (task.isSuccessful()) {
