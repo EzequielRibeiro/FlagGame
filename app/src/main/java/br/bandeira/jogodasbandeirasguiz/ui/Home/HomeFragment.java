@@ -21,13 +21,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -60,6 +62,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import br.bandeira.jogodasbandeirasguiz.MainActivity;
 import br.bandeira.jogodasbandeirasguiz.R;
@@ -90,20 +93,19 @@ public class HomeFragment extends Fragment {
 
     public static GamesSignInClient gamesSignInClient;
 
-    private TextView textViewId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         homeViewModel =
-                ViewModelProviders.of(this).get(HomeViewModel.class);
+                new ViewModelProvider(this).get(HomeViewModel.class);
         root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        navController = Navigation.findNavController(getActivity(), R.id.nav_host_controller_fragment);
+        navController = Navigation.findNavController(requireActivity(), R.id.nav_host_controller_fragment);
         NavigationView navigationView = ((MainActivity)getActivity()).findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         buttonSign = headerView.findViewById(R.id.buttonSigned);
-        textViewId = root.findViewById(R.id.textViewIdPlayer);
+        root.findViewById(R.id.textViewIdPlayer);
 
 
         buttonSign.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +134,7 @@ public class HomeFragment extends Fragment {
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
                     builder.setTitle("Login Google Play");
                     builder.setMessage("Player is not signed in on Google Play. Press Sign In to see the score of the others players.");
                     builder.setPositiveButton("Sign In", new DialogInterface.OnClickListener() {
@@ -186,7 +188,7 @@ public class HomeFragment extends Fragment {
         listView.setAdapter(ADAPTER);
 
 
-        loadAdInter(getContext());
+        loadAdInter(requireActivity());
 
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView = root.findViewById(R.id.adView);
@@ -401,6 +403,7 @@ public class HomeFragment extends Fragment {
     public void gamesSignInClient (){
         if(gamesSignInClient != null)
                  gamesSignInClient.signIn();
+        assert gamesSignInClient != null;
         isAuthenticated = gamesSignInClient.isAuthenticated().isSuccessful();
         if(isAuthenticated)
             Toast.makeText(getActivity(),"Signed Google Game Play successfully",Toast.LENGTH_LONG).show();
@@ -411,24 +414,30 @@ public class HomeFragment extends Fragment {
     }
 
     private void showLeaderboard() {
-        PlayGames.getLeaderboardsClient(getActivity())
+
+       PlayGames.getLeaderboardsClient(requireActivity())
                 .getLeaderboardIntent(getString(R.string.leaderboard_id))
                 .addOnSuccessListener(new OnSuccessListener<Intent>() {
                     @Override
                     public void onSuccess(Intent intent) {
                         startActivityForResult(intent, RC_LEADERBOARD_UI);
+                     //   onActivityResult(RC_LEADERBOARD_UI,RC_LEADERBOARD_UI,intent);
                     }
                 });
 
-
+/*
+        PlayGames.getLeaderboardsClient(requireActivity())
+                .getAllLeaderboardsIntent()
+                .addOnSuccessListener(intent -> leaderboardLauncher.launch(intent));
+*/
 
     }
 
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
-        GoogleSignInClient signInClient = GoogleSignIn.getClient(getContext(),
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(requireActivity(),
                 GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
-        signInClient.signOut().addOnCompleteListener(getActivity(),
+        signInClient.signOut().addOnCompleteListener(requireActivity(),
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -441,14 +450,9 @@ public class HomeFragment extends Fragment {
     public boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability googlePlayServicesAvailability = GoogleApiAvailability.getInstance();
 
-        if (googlePlayServicesAvailability == null) {
-            Log.e(TAG, "Google Play Services Availability Failed");
-            return false;
-        } else {
-            Log.i(TAG, "Google Play Services Availability Working.");
-        }
+        Log.i(TAG, "Google Play Services Availability Working.");
 
-        return googlePlayServicesAvailability.isGooglePlayServicesAvailable(getContext()) == ConnectionResult.SUCCESS;
+        return googlePlayServicesAvailability.isGooglePlayServicesAvailable(requireActivity()) == ConnectionResult.SUCCESS;
     }
 
 

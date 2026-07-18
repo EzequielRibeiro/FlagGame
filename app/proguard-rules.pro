@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# Manter as classes do WorkManager e seus inicializadores
+-keep class androidx.work.impl.workers.** { *; }
+-keep class androidx.work.impl.background.** { *; }
+-keep class androidx.work.impl.WorkDatabase_Impl { *; }
+
+# Manter classes do Jetpack Startup
+-keep class androidx.startup.InitializationProvider { *; }
+
+# Impedir a ofuscação de componentes internos do Room necessários ao WorkManager
+-keep class * extends androidx.room.RoomDatabase
+-dontwarn androidx.work.**
+-dontwarn androidx.room.**

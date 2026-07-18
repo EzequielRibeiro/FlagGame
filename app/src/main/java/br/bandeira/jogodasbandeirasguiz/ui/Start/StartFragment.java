@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import br.bandeira.jogodasbandeirasguiz.R;
@@ -35,7 +35,7 @@ public class StartFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         startViewModel =
-                ViewModelProviders.of(this).get(StartViewModel.class);
+                new ViewModelProvider(this).get(StartViewModel.class);
         root = inflater.inflate(R.layout.fragment_start, container, false);
         final TextView textView = root.findViewById(R.id.text_points_value);
         startViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

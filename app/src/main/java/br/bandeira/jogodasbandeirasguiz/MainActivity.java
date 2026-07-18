@@ -44,6 +44,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.google.android.gms.games.PlayGamesSdk;
+import com.google.android.gms.security.ProviderInstaller;
 import java.util.Random;
 
 import br.bandeira.jogodasbandeirasguiz.ui.Start.StartViewModel;
@@ -67,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Install the security provider to avoid ProviderInstaller registration failures
+        try {
+            ProviderInstaller.installIfNeeded(this);
+        } catch (Exception e) {
+            Log.e(TAG, "Google Play Services out of date or unavailable.", e);
+        }
+
         MultiDex.install(this);
         PlayGamesSdk.initialize(this);
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -228,20 +237,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Sound(MainActivity.this);
-                return true;
-            case R.id.action_feedback:
-                feedBack();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Sound(MainActivity.this);
+            return true;
+        } else if (id == R.id.action_feedback) {
+            feedBack();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
     }
 

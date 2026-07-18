@@ -1,6 +1,6 @@
 package br.bandeira.jogodasbandeirasguiz.ui.About;
 
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 
@@ -19,7 +19,6 @@ import br.bandeira.jogodasbandeirasguiz.R;
 public class AboutFragment extends Fragment {
 
     private TextView textView;
-    private AboutViewModel mViewModel;
 
     public static AboutFragment newInstance() {
         return new AboutFragment();
@@ -44,7 +43,7 @@ public class AboutFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mViewModel = ViewModelProviders.of(this).get(AboutViewModel.class);
+        AboutViewModel mViewModel = new ViewModelProvider(this).get(AboutViewModel.class);
         // TODO: Use the ViewModel
     }
 
